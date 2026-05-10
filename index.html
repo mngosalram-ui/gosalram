@@ -163,8 +163,16 @@ nav.solid { background: rgba(8,9,14,0.97); border-color: var(--b-gold); }
   display: flex; align-items: center; justify-content: center;
   border: 3px solid var(--bg);
   box-shadow: 0 0 0 2px var(--gold), 0 8px 40px rgba(196,156,68,0.2), 0 20px 60px rgba(0,0,0,0.5);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
-.photo-img-wrap img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.photo-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
+  image-rendering: high-quality;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
 .photo-placeholder { font-size: 72px; opacity: .2; }
 
 .photo-label {
@@ -772,7 +780,7 @@ textarea.fi { min-height: 88px; resize: vertical; }
         <div class="ph-zone" onclick="document.getElementById('photoIn').click()">
           <div class="ph-z-ico">📸</div>
           <div class="ph-z-txt">Click to upload photo</div>
-          <div class="ph-z-hint">JPG / PNG · Max 5MB · Crop editor opens automatically</div>
+          <div class="ph-z-hint">JPG / PNG / WEBP · Max 20MB · Saved as high-res PNG</div>
         </div>
         <input type="file" id="photoIn" accept="image/*" style="display:none" onchange="handleUpload(event)"/>
         <div style="display:flex;gap:10px;align-items:center;">
@@ -838,7 +846,7 @@ textarea.fi { min-height: 88px; resize: vertical; }
 </div>
 
 <script>
-const PWD = '#gosalram@2004';
+const PWD = 'gosalram2024';
 const D = {
   about:{p1:"I'm an MBA graduate specializing in Finance and Operations, driven by a passion for data-driven decision making and operational excellence.",p2:"With a strong foundation in analytical tools like SAP FICO, IBM SPSS, and Power BI, I bridge the gap between financial strategy and operational efficiency.",p3:"I'm currently seeking opportunities to contribute as a Financial Analyst or Operations Specialist — where numbers meet meaningful strategy."},
   tech:['📊 SAP FICO','📈 IBM SPSS','📋 MS Excel','🔵 Power BI','💼 Microsoft 365','🎨 Canva'],
@@ -873,14 +881,17 @@ function resetVis(){if(confirm('Reset visitor data?')){sv('gn_v',{total:0,today:
 
 /* CROP */
 let cs={scale:1,ox:0,oy:0,drag:false,sx:0,sy:0};
+let originalSrc=''; // store original for quality preservation
+
 function handleUpload(e){
   const f=e.target.files[0];if(!f)return;
-  if(f.size>5242880){alert('Max 5MB');return;}
+  if(f.size>20971520){alert('Max file size is 20MB');return;} // raised to 20MB
   const r=new FileReader();
   r.onload=ev=>{
+    originalSrc=ev.target.result; // save original full res
     cs.scale=1;cs.ox=0;cs.oy=0;
     const img=document.getElementById('cropImg');
-    img.src=ev.target.result;
+    img.src=originalSrc;
     document.getElementById('cropScale').value=1;
     img.style.transform='scale(1) translate(0,0)';
     document.getElementById('cropOv').classList.add('open');
@@ -897,31 +908,74 @@ document.addEventListener('touchmove',e=>{if(!cs.drag)return;const t=e.touches[0
 document.addEventListener('touchend',()=>cs.drag=false);
 function updateCropT(){cs.scale=parseFloat(document.getElementById('cropScale').value);ci.style.transform=`scale(${cs.scale}) translate(${cs.ox/cs.scale}px,${cs.oy/cs.scale}px)`;}
 function cancelCrop(){document.getElementById('cropOv').classList.remove('open');}
+
 function applyCrop(){
-  const canvas=document.createElement('canvas'),sz=500;canvas.width=sz;canvas.height=sz;
-  const ctx=canvas.getContext('2d');
-  const box=document.getElementById('cropFrame').getBoundingClientRect();
-  const ir=ci.getBoundingClientRect();
-  const cx=box.left+box.width/2,cy=box.top+box.height/2,r=120;
-  const sx=(cx-r-ir.left)/cs.scale,sy=(cy-r-ir.top)/cs.scale;
-  const sw=(r*2)/cs.scale,sh=(r*2)/cs.scale;
-  ctx.beginPath();ctx.arc(sz/2,sz/2,sz/2,0,Math.PI*2);ctx.clip();
-  const nw=ci.naturalWidth,nh=ci.naturalHeight;
-  const sX=nw/ci.offsetWidth,sY=nh/ci.offsetHeight;
-  ctx.drawImage(ci,sx*sX,sy*sY,sw*sX,sh*sY,0,0,sz,sz);
-  const url=canvas.toDataURL('image/jpeg',.98);
-  sv('gn_photo',url);applyPhoto(url);updateThumb(url);
-  document.getElementById('cropOv').classList.remove('open');flash('sm-photo');
+  // Use device pixel ratio for retina/HiDPI screens
+  const dpr = window.devicePixelRatio || 1;
+  const outputSize = 800; // high res output
+  const canvas = document.createElement('canvas');
+  canvas.width = outputSize * dpr;
+  canvas.height = outputSize * dpr;
+  canvas.style.width = outputSize + 'px';
+  canvas.style.height = outputSize + 'px';
+
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // Enable maximum quality smoothing
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+
+  // Draw using the ORIGINAL full-res image for maximum quality
+  const origImg = new Image();
+  origImg.onload = function() {
+    // Circular clip
+    ctx.beginPath();
+    ctx.arc(outputSize/2, outputSize/2, outputSize/2, 0, Math.PI*2);
+    ctx.clip();
+
+    // Calculate source region from crop state
+    const box = document.getElementById('cropFrame').getBoundingClientRect();
+    const ir = ci.getBoundingClientRect();
+    const r = 120; // crop circle radius on screen
+    const cx = box.left + box.width/2;
+    const cy = box.top + box.height/2;
+
+    // Map screen coords back to original image pixels
+    const scaleX = origImg.naturalWidth / ci.offsetWidth;
+    const scaleY = origImg.naturalHeight / ci.offsetHeight;
+
+    const sx = ((cx - r - ir.left) / cs.scale) * scaleX;
+    const sy = ((cy - r - ir.top) / cs.scale) * scaleY;
+    const sw = (r * 2 / cs.scale) * scaleX;
+    const sh = (r * 2 / cs.scale) * scaleY;
+
+    ctx.drawImage(origImg, sx, sy, sw, sh, 0, 0, outputSize, outputSize);
+
+    // Save as PNG for lossless quality
+    const url = canvas.toDataURL('image/png');
+    sv('gn_photo', url);
+    applyPhoto(url);
+    updateThumb(url);
+    document.getElementById('cropOv').classList.remove('open');
+    flash('sm-photo');
+  };
+  origImg.src = originalSrc; // draw from original, not the scaled preview
 }
+
 function applyPhoto(src){
   const w=document.getElementById('hero-photo-wrap');
-  w.innerHTML=src?`<img src="${src}" alt="Gosalram N"/>`:'<span class="photo-placeholder">👤</span>';
+  if(src){
+    w.innerHTML=`<img src="${src}" alt="Gosalram N" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:high-quality;"/>`;
+  } else {
+    w.innerHTML='<span class="photo-placeholder">👤</span>';
+  }
 }
 function updateThumb(src){
   const t=document.getElementById('admin-thumb');
-  t.innerHTML=src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover;"/>`:'<span>👤</span>';
+  t.innerHTML=src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover;image-rendering:high-quality;"/>`:'<span>👤</span>';
 }
-function removePhoto(){localStorage.removeItem('gn_photo');applyPhoto('');updateThumb('');flash('sm-photo');}
+function removePhoto(){localStorage.removeItem('gn_photo');originalSrc='';applyPhoto('');updateThumb('');flash('sm-photo');}
 
 /* PROFILE */
 function saveProfile(){
