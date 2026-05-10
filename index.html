@@ -513,23 +513,111 @@ textarea.fi { min-height: 88px; resize: vertical; }
 .cb-cancel { background: rgba(255,255,255,.07); color: var(--dim); border: 1px solid var(--border); }
 .cb-cancel:hover { color: var(--white); }
 
-/* MOBILE */
-@media(max-width:900px){
-  nav{padding:0 20px;} .n-links{display:none;} .n-links.open{display:flex;flex-direction:column;position:absolute;top:62px;left:0;right:0;background:rgba(8,9,14,.98);border-bottom:1px solid var(--border);padding:14px 20px;gap:2px;}
-  .hbg{display:flex;}
-  #hero{padding:90px 20px 52px;}
-  .photo-frame{width:160px;height:160px;margin:0 auto;}
-  .photo-img-wrap{width:160px;height:160px;}
-  .h-btns{justify-content:center;}
-  .h-stats{justify-content:center;}
-  .s-outer{padding:72px 20px;}
-  .s-rule{margin-left:20px;}
-  .about-layout,.skills-layout{grid-template-columns:1fr;gap:32px;}
-  #proj-display,#cert-display{grid-template-columns:1fr;}
-  footer{flex-direction:column;gap:8px;padding:20px;text-align:center;}
-  #contact{padding:72px 20px;}
-  .dash-top,.dash-tabs,.dash-body{padding-left:18px;padding-right:18px;}
-  .v-row{grid-template-columns:1fr 1fr;}
+/* MOBILE — 768px and below */
+@media(max-width:768px){
+  /* NAV */
+  nav { padding: 0 16px; height: 56px; }
+  .n-links { display: none; }
+  .n-links.open {
+    display: flex; flex-direction: column;
+    position: fixed; top: 56px; left: 0; right: 0;
+    background: rgba(8,9,14,.99);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px; gap: 2px; z-index: 899;
+  }
+  .n-links a { font-size: 14px; padding: 10px 14px; }
+  .hbg { display: flex; }
+  .nb { font-size: 11px; padding: 6px 12px; }
+
+  /* HERO */
+  #hero {
+    padding: 80px 16px 56px;
+    min-height: auto;
+  }
+  .photo-frame { width: 140px; height: 140px; margin: 0 auto; }
+  .photo-img-wrap { width: 140px; height: 140px; }
+  .photo-frame-border { inset: -3px; }
+  .photo-offset { inset: -8px; }
+  .photo-col { margin-bottom: 28px; }
+
+  .h-kicker { gap: 10px; }
+  .h-kicker-line { width: 20px; }
+  .h-kicker-txt { font-size: 9px; letter-spacing: 2px; }
+
+  .h-name { font-size: clamp(36px,10vw,52px); gap: 10px; letter-spacing: -1px; }
+  .h-title { font-size: 14px; margin-bottom: 20px; }
+  .h-divider { margin-bottom: 20px; }
+  .h-divider-line, .h-divider-line-r { width: 40px; }
+
+  .h-btns { flex-direction: column; align-items: center; gap: 10px; margin-bottom: 28px; }
+  .btn-solid, .btn-line { width: 100%; max-width: 280px; justify-content: center; padding: 13px 20px; font-size: 13px; }
+
+  .h-stats { flex-wrap: wrap; }
+  .h-stat { padding: 12px 16px; }
+  .h-sn { font-size: 20px; }
+  .h-sl { font-size: 8px; }
+
+  /* SECTIONS */
+  .s-outer { padding: 56px 16px; }
+  .s-rule { margin-left: 16px; }
+  .s-title { font-size: clamp(28px,8vw,42px); margin-bottom: 32px; }
+
+  /* ABOUT */
+  .about-layout { grid-template-columns: 1fr; gap: 28px; }
+  .about-body { font-size: 16px; }
+
+  /* PROJECTS */
+  #proj-display { grid-template-columns: 1fr; gap: 16px; }
+  .proj { padding: 24px 20px; }
+  .proj-idx { font-size: 48px; }
+  .proj-title { font-size: 19px; }
+
+  /* SKILLS */
+  .skills-layout { grid-template-columns: 1fr; gap: 28px; }
+  .pill { font-size: 12px; padding: 8px 14px; }
+
+  /* CERTIFICATES */
+  #cert-display { grid-template-columns: 1fr; gap: 12px; }
+  .cert { flex-wrap: nowrap; }
+  .cert-n { font-size: 12px; }
+
+  /* CONTACT */
+  #contact { padding: 56px 16px; }
+  .c-email { font-size: 16px; }
+  .c-btns { flex-direction: column; align-items: center; gap: 10px; }
+  .c-btns .btn-solid, .c-btns .btn-line { width: 100%; max-width: 280px; justify-content: center; }
+
+  /* FOOTER */
+  footer { flex-direction: column; gap: 8px; padding: 20px 16px; text-align: center; }
+
+  /* DASHBOARD */
+  .dash { border-radius: 16px; }
+  .dash-top { padding: 16px 16px; }
+  .dash-tabs { padding: 14px 16px 0; gap: 6px; }
+  .dt { font-size: 11px; padding: 7px 12px; }
+  .dash-body { padding: 18px 16px 24px; }
+  .v-row { grid-template-columns: 1fr 1fr; }
+  .vb-n { font-size: 60px; }
+
+  /* LOGIN */
+  .login-card { width: 92vw; padding: 36px 24px; }
+
+  /* CROP */
+  .crop-frame { max-width: 96vw; max-height: 45vh; }
+  .crop-img-el { max-width: 96vw; max-height: 45vh; }
+  .crop-mask::before { -webkit-mask: radial-gradient(circle 80px at 50% 50%, transparent 78px, black 80px); mask: radial-gradient(circle 80px at 50% 50%, transparent 78px, black 80px); }
+  .crop-mask::after { width: 160px; height: 160px; }
+  .crop-sl { width: 140px; }
+  .cb { padding: 10px 18px; font-size: 11px; }
+}
+
+/* VERY SMALL PHONES — 380px and below */
+@media(max-width:380px){
+  .h-name { font-size: 32px; }
+  .h-stats { flex-direction: column; align-items: center; }
+  .h-stat { border-right: none !important; border-bottom: 1px solid var(--border); width: 100%; }
+  .h-stat:last-child { border-bottom: none; }
+  nav { padding: 0 12px; }
 }
 </style>
 </head>
@@ -769,6 +857,21 @@ textarea.fi { min-height: 88px; resize: vertical; }
         </div>
         <p style="font-size:11px;color:var(--dim);margin-top:14px;text-align:center;font-family:var(--mono);">Stored locally in your browser · Resets on data clear</p>
         <div style="text-align:center;margin-top:14px;"><button class="d-reset" onclick="resetVis()">Reset All Counts</button></div>
+
+        <!-- SYNC SECTION -->
+        <div style="margin-top:28px;border-top:1px solid var(--border);padding-top:22px;">
+          <div class="d-sub" style="margin-top:0;">📱 Sync to Other Devices</div>
+          <p style="font-size:12px;color:var(--dim);margin-bottom:16px;line-height:1.6;">Changes you make (certificates, skills, projects) are saved locally and won't appear on your phone automatically. Use Export → Import to sync across devices.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="d-save" onclick="exportData()" style="display:inline-flex;align-items:center;gap:8px;">
+              ⬇ Export Data to File
+            </button>
+            <button class="d-add-btn" onclick="importData()" style="display:inline-flex;align-items:center;gap:8px;">
+              ⬆ Import Data from File
+            </button>
+          </div>
+          <p style="font-size:11px;color:var(--dim);margin-top:12px;font-family:var(--mono);">Export on PC → send JSON file to phone → Import on phone</p>
+        </div>
       </div>
 
       <!-- PHOTO & PROFILE -->
@@ -846,17 +949,76 @@ textarea.fi { min-height: 88px; resize: vertical; }
 </div>
 
 <script>
-const PWD = '#gosalram@2004';
+const PWD = 'gosalram2024';
+
+// ── MASTER DATA — edit here to change defaults on ALL devices ──
 const D = {
-  about:{p1:"I'm an MBA graduate specializing in Finance and Operations, driven by a passion for data-driven decision making and operational excellence.",p2:"With a strong foundation in analytical tools like SAP FICO, IBM SPSS, and Power BI, I bridge the gap between financial strategy and operational efficiency.",p3:"I'm currently seeking opportunities to contribute as a Financial Analyst or Operations Specialist — where numbers meet meaningful strategy."},
+  about:{
+    p1:"I'm an MBA graduate specializing in Finance and Operations, driven by a passion for data-driven decision making and operational excellence.",
+    p2:"With a strong foundation in analytical tools like SAP FICO, IBM SPSS, and Power BI, I bridge the gap between financial strategy and operational efficiency.",
+    p3:"I'm currently seeking opportunities to contribute as a Financial Analyst or Operations Specialist — where numbers meet meaningful strategy."
+  },
   tech:['📊 SAP FICO','📈 IBM SPSS','📋 MS Excel','🔵 Power BI','💼 Microsoft 365','🎨 Canva'],
   soft:['💬 Communication','🔍 Problem Solving','🤝 Teamwork','⏱ Time Management','🔄 Adaptability','🧠 Analytical Thinking'],
-  projs:[{title:'Industry 4.0 Financial Study',tag:'Finance · Research',desc:'Analyzed cost efficiency and sustainability impact across manufacturing processes.',link:'Industry4_project.pdf'},{title:'Organizational Performance Study',tag:'Operations · Analysis',desc:'Identified productivity gaps and operational improvements within organizational structures.',link:'Sodecia_project.pdf'}],
-  certs:[{name:'SAP FICO',issuer:'SAP Certified',link:'sap_fico_certificate.pdf',icon:'📊'},{name:'Business Analytics',issuer:'Professional Certificate',link:'business_analytics_certificate.pdf',icon:'📈'},{name:'NISM SEBI Investor Awareness',issuer:'SEBI · NISM',link:'nism_certificate.pdf',icon:'🏦'},{name:'Emerging Technologies for Managers',issuer:'Professional Development',link:'emerging_tech_certificate.pdf',icon:'🚀'},{name:'HP LIFE',issuer:'HP Foundation',link:'hp_life_certificate.pdf',icon:'💡'}],
-  profile:{resume:'Gosalram_Resume.pdf',linkedin:'https://www.linkedin.com/in/gosalram-n-2164a52b1/',tagline:'Finance & Operations · Aspiring Analyst'}
+  projs:[
+    {title:'Industry 4.0 Financial Study',tag:'Finance · Research',desc:'Analyzed cost efficiency and sustainability impact across manufacturing processes.',link:'Industry4_project.pdf'},
+    {title:'Organizational Performance Study',tag:'Operations · Analysis',desc:'Identified productivity gaps and operational improvements within organizational structures.',link:'Sodecia_project.pdf'}
+  ],
+  // ── ADD/EDIT YOUR CERTIFICATES HERE — shows on ALL devices ──
+  certs:[
+    {name:'SAP FICO',issuer:'SAP Certified',link:'sap_fico_certificate.pdf',icon:'📊'},
+    {name:'Business Analytics',issuer:'Professional Certificate',link:'business_analytics_certificate.pdf',icon:'📈'},
+    {name:'NISM SEBI Investor Awareness',issuer:'SEBI · NISM',link:'nism_certificate.pdf',icon:'🏦'},
+    {name:'Emerging Technologies for Managers',issuer:'Professional Development',link:'emerging_tech_certificate.pdf',icon:'🚀'},
+    {name:'Business Communication',issuer:'HP Foundation',link:'Business_Communication.pdf',icon:'💡'}
+    {name:'AI For Beginners',issuer:'HP Foundation',link:'AI_For_Beginners.pdf',icon:'💡'}
+    {name:'Starting a Small Business',issuer:'HP Foundation',link:'Starting_a_Small_Business.pdf',icon:'💡'}
+  ],
+  // ── ALWAYS HARDCODE LINKEDIN HERE SO IT NEVER BREAKS ──
+  profile:{
+    resume:'Gosalram_Resume.pdf',
+    linkedin:'https://www.linkedin.com/in/gosalram-n-2164a52b1/',
+    tagline:'Finance & Operations · Aspiring Analyst'
+  }
 };
+
 const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}};
 const sv=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+
+// ── SYNC: export data to JSON file (use on PC, import on phone) ──
+function exportData(){
+  const data={
+    gn_about:ld('gn_about',D.about),
+    gn_tech:ld('gn_tech',D.tech),
+    gn_soft:ld('gn_soft',D.soft),
+    gn_projs:ld('gn_projs',D.projs),
+    gn_certs:ld('gn_certs',D.certs),
+    gn_profile:ld('gn_profile',D.profile)
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='portfolio_data.json';
+  a.click();
+}
+function importData(){
+  const inp=document.createElement('input');
+  inp.type='file'; inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        Object.keys(data).forEach(k=>sv(k,data[k]));
+        render(); loadDash();
+        alert('✓ Data imported successfully! Your site is now updated.');
+      }catch(err){alert('Invalid file. Please use a file exported from this portfolio.');}
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
 
 /* VISITORS */
 function trackVisit(){
@@ -984,11 +1146,15 @@ function saveProfile(){
 }
 function applyProfile(){
   const p=ld('gn_profile',D.profile);
-  document.getElementById('resume-link').href=p.resume;
-  document.getElementById('c-resume').href=p.resume;
-  document.getElementById('linkedin-link').href=p.linkedin;
-  document.getElementById('c-linkedin').href=p.linkedin;
-  document.getElementById('hero-tagline').textContent=p.tagline;
+  // Always use hardcoded fallback for LinkedIn so it never breaks
+  const linkedin = (p.linkedin && p.linkedin.startsWith('http')) ? p.linkedin : D.profile.linkedin;
+  const resume = p.resume || D.profile.resume;
+  const tagline = p.tagline || D.profile.tagline;
+  document.getElementById('resume-link').href = resume;
+  document.getElementById('c-resume').href = resume;
+  document.getElementById('linkedin-link').href = linkedin;
+  document.getElementById('c-linkedin').href = linkedin;
+  document.getElementById('hero-tagline').textContent = tagline;
 }
 function loadProfilePanel(){
   const p=ld('gn_profile',D.profile);
@@ -1103,8 +1269,14 @@ function toggleTheme(){
 }
 
 /* MOBILE */
-function toggleMenu(){document.getElementById('navLinks').classList.toggle('open');}
-document.querySelectorAll('.n-links a').forEach(a=>a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open')));
+/* MOBILE NAV */
+function toggleMenu(){
+  const nl = document.getElementById('navLinks');
+  nl.classList.toggle('open');
+}
+document.querySelectorAll('.n-links a').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('navLinks').classList.remove('open');
+}));
 window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>50));
 
 /* REVEAL */
