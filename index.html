@@ -247,16 +247,31 @@ textarea.fi{min-height:88px;resize:vertical;}
 .sync-actions{display:flex;gap:10px;flex-wrap:wrap;}
 
 /* CROP */
-.crop-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);backdrop-filter:blur(10px);z-index:19999;align-items:center;justify-content:center;flex-direction:column;gap:22px;}
+.crop-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);backdrop-filter:blur(10px);z-index:19999;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 .crop-ov.open{display:flex;}
-.crop-frame{position:relative;overflow:hidden;border-radius:8px;background:#000;max-width:88vw;max-height:55vh;display:flex;align-items:center;justify-content:center;}
-.crop-img-el{max-width:88vw;max-height:55vh;display:block;cursor:move;user-select:none;}
+.crop-top-label{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;}
+.crop-frame{position:relative;overflow:hidden;border-radius:8px;background:#111;max-width:88vw;max-height:52vh;display:flex;align-items:center;justify-content:center;border:1px solid rgba(196,156,68,0.2);}
+.crop-img-el{max-width:88vw;max-height:52vh;display:block;cursor:move;user-select:none;}
 .crop-mask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-.crop-mask::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.6);-webkit-mask:radial-gradient(circle 120px at 50% 50%,transparent 118px,black 120px);mask:radial-gradient(circle 120px at 50% 50%,transparent 118px,black 120px);}
+.crop-mask::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.62);-webkit-mask:radial-gradient(circle 120px at 50% 50%,transparent 118px,black 120px);mask:radial-gradient(circle 120px at 50% 50%,transparent 118px,black 120px);}
 .crop-mask::after{content:'';width:240px;height:240px;border:2px solid var(--gold);border-radius:50%;}
-.crop-ctrl{display:flex;flex-direction:column;align-items:center;gap:14px;}
-.crop-slider-r{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;color:var(--dim);}
-.crop-sl{width:200px;accent-color:var(--gold);}
+/* face guide crosshair */
+.crop-guide{position:absolute;pointer-events:none;display:flex;align-items:center;justify-content:center;}
+.crop-guide::before{content:'';position:absolute;width:1px;height:48px;background:rgba(196,156,68,0.5);}
+.crop-guide::after{content:'';position:absolute;width:48px;height:1px;background:rgba(196,156,68,0.5);}
+.crop-guide-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0.8;position:absolute;}
+/* face zone suggestion */
+.crop-face-zone{position:absolute;width:100px;height:120px;border:1.5px dashed rgba(196,156,68,0.4);border-radius:50% 50% 45% 45%;top:calc(50% - 110px);pointer-events:none;}
+.crop-ctrl{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:380px;}
+.crop-slider-r{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;color:var(--dim);width:100%;justify-content:center;}
+.crop-sl{width:180px;accent-color:var(--gold);}
+/* arrow pad */
+.crop-arrows{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:4px;}
+.arr-btn{width:40px;height:40px;border-radius:10px;background:rgba(196,156,68,0.12);border:1px solid rgba(196,156,68,0.25);color:var(--gold);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;user-select:none;}
+.arr-btn:hover{background:rgba(196,156,68,0.25);}
+.arr-btn:active{background:rgba(196,156,68,0.4);transform:scale(0.93);}
+.arr-center{background:rgba(196,156,68,0.06);cursor:default;font-size:11px;color:var(--dim);}
+.arr-center:hover{background:rgba(196,156,68,0.06);}
 .crop-acts{display:flex;gap:10px;}
 .cb{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.5px;padding:11px 24px;border-radius:100px;cursor:pointer;border:none;transition:all .2s;}
 .cb-gold{background:var(--gold);color:#0a0800;}
@@ -349,11 +364,14 @@ textarea.fi{min-height:88px;resize:vertical;}
   .sync-actions .d-save,.sync-actions .d-add-btn{width:100%;text-align:center;justify-content:center;}
 
   /* CROP */
-  .crop-frame{max-width:96vw;max-height:45vh;}
-  .crop-img-el{max-width:96vw;max-height:45vh;}
+  .crop-frame{max-width:96vw;max-height:40vh;}
+  .crop-img-el{max-width:96vw;max-height:40vh;}
   .crop-mask::before{-webkit-mask:radial-gradient(circle 80px at 50% 50%,transparent 78px,black 80px);mask:radial-gradient(circle 80px at 50% 50%,transparent 78px,black 80px);}
   .crop-mask::after{width:160px;height:160px;}
-  .crop-sl{width:150px;}
+  .crop-face-zone{width:70px;height:84px;top:calc(50% - 76px);}
+  .crop-sl{width:130px;}
+  .arr-btn{width:36px;height:36px;font-size:14px;}
+  .crop-arrows{grid-template-columns:repeat(3,36px);grid-template-rows:repeat(3,36px);}
 }
 
 @media(max-width:380px){
@@ -508,16 +526,46 @@ body.light{--bg:#f5f3ee;--bg2:#ede9e2;--panel:#e8e4db;--card:#dedad1;--border:rg
 
 <!-- CROP -->
 <div class="crop-ov" id="cropOv">
+  <div class="crop-top-label">🎯 Align your face in the circle · Drag or use arrows</div>
   <div class="crop-frame" id="cropFrame">
     <img id="cropImg" class="crop-img-el" draggable="false"/>
-    <div class="crop-mask"></div>
+    <div class="crop-mask">
+      <div class="crop-guide"><div class="crop-guide-dot"></div></div>
+      <div class="crop-face-zone"></div>
+    </div>
   </div>
   <div class="crop-ctrl">
+    <!-- ZOOM -->
     <div class="crop-slider-r">
-      <span>🔍</span>
+      <span style="font-size:13px;">🔍</span>
       <input type="range" class="crop-sl" id="cropScale" min="0.5" max="3" step="0.01" value="1" oninput="updateCropT()"/>
       <span>Zoom</span>
     </div>
+    <!-- ARROW PAD -->
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:center;">
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-bottom:8px;letter-spacing:2px;text-transform:uppercase;">Move Photo</div>
+        <div class="crop-arrows">
+          <div></div>
+          <button class="arr-btn" onmousedown="startMove(0,-8)" ontouchstart="startMove(0,-8)" onmouseup="stopMove()" ontouchend="stopMove()">▲</button>
+          <div></div>
+          <button class="arr-btn" onmousedown="startMove(-8,0)" ontouchstart="startMove(-8,0)" onmouseup="stopMove()" ontouchend="stopMove()">◀</button>
+          <div class="arr-btn arr-center">✛</div>
+          <button class="arr-btn" onmousedown="startMove(8,0)" ontouchstart="startMove(8,0)" onmouseup="stopMove()" ontouchend="stopMove()">▶</button>
+          <div></div>
+          <button class="arr-btn" onmousedown="startMove(0,8)" ontouchstart="startMove(0,8)" onmouseup="stopMove()" ontouchend="stopMove()">▼</button>
+          <div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);text-align:center;margin-bottom:8px;letter-spacing:2px;text-transform:uppercase;">Quick Align</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <button class="arr-btn" style="width:auto;padding:0 14px;font-size:11px;font-family:var(--mono);" onclick="centerFace()">🎯 Center Face</button>
+          <button class="arr-btn" style="width:auto;padding:0 14px;font-size:11px;font-family:var(--mono);" onclick="resetPosition()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+    <!-- ACTIONS -->
     <div class="crop-acts">
       <button class="cb cb-cancel" onclick="cancelCrop()">Cancel</button>
       <button class="cb cb-gold" onclick="applyCrop()">✓ Apply Crop</button>
@@ -795,8 +843,39 @@ document.addEventListener('mouseup',()=>cs.drag=false);
 ci.addEventListener('touchstart',e=>{const t=e.touches[0];cs.drag=true;cs.sx=t.clientX-cs.ox;cs.sy=t.clientY-cs.oy;},{passive:true});
 document.addEventListener('touchmove',e=>{if(!cs.drag)return;const t=e.touches[0];cs.ox=t.clientX-cs.sx;cs.oy=t.clientY-cs.sy;updateCropT();},{passive:true});
 document.addEventListener('touchend',()=>cs.drag=false);
-function updateCropT(){cs.scale=parseFloat(document.getElementById('cropScale').value);ci.style.transform=`scale(${cs.scale}) translate(${cs.ox/cs.scale}px,${cs.oy/cs.scale}px)`;}
+function updateCropT(){
+  cs.scale=parseFloat(document.getElementById('cropScale').value);
+  ci.style.transform=`scale(${cs.scale}) translate(${cs.ox/cs.scale}px,${cs.oy/cs.scale}px)`;
+}
 function cancelCrop(){document.getElementById('cropOv').classList.remove('open');}
+
+/* Arrow move controls */
+let moveInterval=null;
+function startMove(dx,dy){
+  stopMove();
+  doMove(dx,dy);
+  moveInterval=setInterval(()=>doMove(dx,dy),80);
+}
+function doMove(dx,dy){
+  cs.ox+=dx; cs.oy+=dy;
+  ci.style.transform=`scale(${cs.scale}) translate(${cs.ox/cs.scale}px,${cs.oy/cs.scale}px)`;
+}
+function stopMove(){
+  if(moveInterval){clearInterval(moveInterval);moveInterval=null;}
+}
+
+/* Center face — resets position to center */
+function centerFace(){
+  cs.ox=0; cs.oy=0;
+  ci.style.transform=`scale(${cs.scale}) translate(0px,0px)`;
+}
+
+/* Reset everything */
+function resetPosition(){
+  cs.scale=1; cs.ox=0; cs.oy=0;
+  document.getElementById('cropScale').value=1;
+  ci.style.transform='scale(1) translate(0px,0px)';
+}
 function applyCrop(){
   const dpr=window.devicePixelRatio||1,outputSize=800;
   const canvas=document.createElement('canvas');
